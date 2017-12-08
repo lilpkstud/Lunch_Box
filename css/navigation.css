@@ -1,0 +1,13 @@
+/* Default for ALL Pages*/
+body{
+    /*background-color: sandybrown;*/
+    background-color: #e7e1e1;
+}
+
+.footer{
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    line-height: 20px;
+    background-color: pink;
+}

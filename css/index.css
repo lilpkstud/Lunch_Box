@@ -1,0 +1,23 @@
+.product_image{
+    /*width: 100%;
+     height: auto;*/
+    width: 510px;
+    height: 650px;
+    display: block;
+}
+
+.product_info{
+    text-align:right;
+    padding-right: 30px;
+}
+.hidden{
+    position: absolute;
+    visibility: hidden;
+    top: 0;
+    left: 15px;
+    right: 0;
+    width: 510px;
+    height: 630px;
+    /*z-index: 2;*/
+    
+}
