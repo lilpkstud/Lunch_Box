@@ -111,7 +111,9 @@
             <p>Position Left should be bigger...have to change the sizing of position right</p>
             <div class="row">
                 <div class="col position_left">
+                    <p>Image Hover Picture</p>
                     <img class="side_product_img" src="<?=$product['img_hover']?>" alt="">
+                    <p>Primary Image Picture</p>
                     <img class="main_product_img"src="<?=$product['img_url']?>" alt="">
                 </div>
                 <div class="col position_right">
@@ -161,18 +163,18 @@
                 <div class="col center">
                     <a href="#">  
                     <div class="card" style="width: 20rem;">
-                        <img class="card-img-top" src="/img/cross.jpg" alt="Other Product 1">
+                        <img class="card-img-top" src="<?=$product['img_url']?>" alt="Other Product 1">
                         <div class="card-body">
-                            <p class="card-text">Current Color Product 1 of 3</p>
+                            <p class="card-text">Primary Image</p>
                         </div>
                     </div>
                     </a>
                 </div>
                 <div class="col center">
                     <div class="card" style="width: 20rem;">
-                        <a href=""> <img class="card-img-top" src="/img/cross.jpg" alt="Other Product 1"></a>
+                        <a href=""> <img class="card-img-top" src="<?=$product['img_hover']?>" alt="Other Product 1"></a>
                         <div class="card-body">
-                            <p class="card-text">Other Color Product 2 of 3</p>
+                            <p class="card-text">Image Hover</p>
                         </div>
                     </div>
                 </div>

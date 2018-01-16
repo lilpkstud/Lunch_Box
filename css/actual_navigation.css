@@ -85,6 +85,7 @@ a:hover#cart_logo {
     width: 100%;
     line-height: 20px;
     background-color: pink;
+    text-align: center;
 }
 
 /* On smaller screens, where height is less than 450px, change the style of the sidenav (less padding and a smaller font size) */
