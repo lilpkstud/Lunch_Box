@@ -43,7 +43,8 @@
     
     $product_rows = $products_stmt->fetchAll();
     //$order_rows = $orders_stmt->fetchAll();
-    var_dump($product_rows);
+    //echo "Product_Rows: ";
+    //var_dump($product_rows);
     //die();
     
 ?>
@@ -96,7 +97,8 @@
                     ?>
                             <td>
                                 <div class="alert alert-danger" role="alert">
-                                    Low in Stock!!! <br> <?=$product['quantity']?>
+                                    Low in Stock!!! <br> 
+                                    Current Quantity: <?=$product['quantity']?>
                                     <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
                                         <input type="hidden" name="product_id" value="<?=$product['product_id']?>">
                                         <input type='text' name='refill_quantity'>
@@ -107,7 +109,16 @@
                     <?php
                         } else {
                     ?>
-                        <td><?= $product['quantity']?></td>
+                        <td>
+                            <div class="alert alert-info" role="alert">
+                                Current Quantity: <?= $product['quantity']?>
+                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method ="post">
+                                    <input type="hidden" name="product_id" value="<?=$product['product_id']?>">
+                                    <input type='text' name='refill_quantity'>
+                                    <input type='submit' value = 'New Quantity'>
+                                </form>
+                            </div>
+                        </td>
                     <?php
                         }
                     ?>
@@ -122,11 +133,30 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 </body>
-</html>
 <?php
-    var_dump($_POST['product_id']);
-    var_dump($_POST['refill_quantity']);
-    die();
-
-    //UPDATE `products` SET `quantity` = '10' WHERE `products`.`product_id` = 1;
+    if(isset($_POST['refill_quantity'])) {
+       $refill_id = $_POST['product_id'];
+       $refill_quantity = $_POST['refill_quantity'];
+       
+       $refill_update_query = " UPDATE products
+            SET 
+                products.quantity = $refill_quantity
+                
+            WHERE 
+                products.product_id = $refill_id
+        ";
+        try
+        {
+            $stmt = $db->prepare($refill_update_query);
+            $stmt->execute();
+            echo "Query has been executed";
+            /* Query works fine but Admin_dashboard.php doesnt refresh the new quantity */
+        } 
+        catch(PDOExpection $ex)
+        {
+            die("Failed to run query: ". $ex->getMessage());
+        }
+    }
+   
 ?>
+</html>
