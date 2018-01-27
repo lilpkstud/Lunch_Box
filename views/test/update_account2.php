@@ -66,19 +66,51 @@
     <link rel="stylesheet" type="text/css" href="/css/index.css">
 </head>
 <body>
-    <h1>Update Account 2</h1>
+    <nav class="nav navbar fixed-top">
+        <div class="col">
+            <!-- Use any element to open the sidenav -->
+            <span onclick="openNav()">
+                <i id="bars" class="fa fa-bars fa-2x" aria-hidden="true"></i>
+            </span>
+        </div>
+        <div class="col">
+            <h1 style="text-align: center; color: sandybrown"> Lunch Box Socks </h1>
+        </div>
+        <div class="col">
+            <?php
+                /*
+                    Allow the user to logout if the $_SESSION['user'] is set
+                */
+                if(isset($_SESSION['user'])){
+            ?>
+                <a class="btn btn-primary" href="../../views/test/update_account2.php"> Update Account </a>
+                <a class="btn btn-primary" href="../views/connection.php?logout=yes" role="button">LOGOUT</a>
+            <?php        
+                } else {
+            ?>
+                <a class="btn btn-primary" href="/views/users/register.php" role="button">LOGIN</a>
+            <?php
+                }
+            ?>
+            <a id="cart_logo" href="/views/checkout/shopping_cart.php">
+                <i id="i_shopping_logo"class="fa fa-shopping-cart fa-2x" aria-hidden="true">(<?=$_SESSION['total_quantity']?>)</i>
+            </a>
+        </div>       
+    
+        <div id="mySidenav" class="sidenav">
+            <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+            <a href="/">HOME</a>
+            <a id="product_logo_tag" href="/"><img id="product_logo" src="/img/jordan.jpg" alt=""></a>
+            <a href="#">ABOUT</a>
+            <a href="#">FAQ</a>
+            <a href="/views/checkout/shopping_cart.php"> Shopping Cart </a>
+        </div>
+    </nav>
     <div class="container">
-            <!-- Breadcrumb -->
-            <nav aria-label="breadcrumb" role="navigation">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item active" aria-current="page">Shipping Address</li>
-                    <li class="breadcrumb-item">Billing</a></li>
-                    <li class="breadcrumb-item">Review</a></li>
-                </ol>
-            </nav>
             <h3>Update Account</h3>
+            <p>CREATE AN ICON SAYING UPDATE HAS BEEN SUCCESSFUL!!</p>
             <div class="alert alert-warning" role="alert">
-                Please verify that the following information is now correct.
+                Please verify that the following information is correct.
             </div>
             <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post" id="update_shipping_validation" novalidate>
                 <input type="hidden" name="user_id" value="<?=$database['user_id']?>">

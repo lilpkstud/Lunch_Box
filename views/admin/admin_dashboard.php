@@ -22,19 +22,19 @@
     /*
         Grabbing all orders and the user 
     */
-    /*$orders_query = "
+    $orders_query = "
         SELECT 
             orders.order_id, orders.user_id as order_user_id, orders.invoice_number, orders.product_sku, orders.product_color, orders.quantity, orders.CREATED_AT, orders.UPDATED_AT, orders.shipped,
             users.user_id, users.first_name, users.last_name, users.email_address, users.address1, users.address2,users.city, users.state, users.zip_code, users.UPDATED_AT
          FROM orders JOIN users ON users.user_id = orders.user_id
-    ";*/
+    ";
     try
     {
         $products_stmt = $db->prepare($products_query);
         $products_stmt->execute();
 
-        //$orders_stmt = $db->prepare($orders_query);
-        //$orders_stmt->execute();
+        $orders_stmt = $db->prepare($orders_query);
+        $orders_stmt->execute();
     }
     catch(PDOExpection $ex)
     {
@@ -42,7 +42,8 @@
     }
     
     $product_rows = $products_stmt->fetchAll();
-    //$order_rows = $orders_stmt->fetchAll();
+    $order_rows = $orders_stmt->fetchAll();
+
     //echo "Product_Rows: ";
     //var_dump($product_rows);
     //die();
@@ -77,54 +78,107 @@
 <body>
     <div class="container">
         <a href="/views/test/email_confirmation.php">Email Confirmation</a>
+        <div class="row">
+            <div class="col">
+                <h1>LEFT POSITION</h1>
 
-        <h1>ADMIN DASHBOARD </h1>
-        <h3>All Products Table</h3>
-        <table>
-            <tr>
-                <th>Product SKU</th>
-                <th>Product Name</th>
-                <th>Price</th>
-                <th>Small Quantity</th>
-            </tr>
-            <?php foreach($product_rows as $product): ?>
-                <tr>
-                    <td><?=$product['sku']?></td>
-                    <td><?=$product['product_name']?></td>
-                    <td>$<?=$product['price']?></td>
-                    <?php
-                        if($product['quantity'] <= 10){
+                <h3>All Products Table</h3>
+                <table>
+                    <tr>
+                        <th>Product SKU</th>
+                        <th>Product Name</th>
+                        <th>Price</th>
+                        <th>Small Quantity</th>
+                    </tr>
+                    <?php foreach($product_rows as $product): ?>
+                        <tr>
+                            <td><?=$product['sku']?></td>
+                            <td><?=$product['product_name']?></td>
+                            <td>$<?=$product['price']?></td>
+                            <?php
+                                if($product['quantity'] <= 10){
+                            ?>
+                                    <td>
+                                        <div class="alert alert-danger" role="alert">
+                                            Low in Stock!!! <br> 
+                                            Current Quantity: <?=$product['quantity']?>
+                                            <form action="../admin/admin_controller.php" method="post">
+                                                <input type="hidden" name="product_id" value="<?=$product['product_id']?>">
+                                                <input type='text' name='refill_quantity'>
+                                                <input type='submit' value = 'New Quantity'>
+                                            </form>
+                                        </div>
+                                    </td>
+                            <?php
+                                } else {
+                            ?>
+                                <td>
+                                    <div class="alert alert-info" role="alert">
+                                        Current Quantity: <?= $product['quantity']?>
+                                        <form action="../admin/admin_controller.php" method ="post">
+                                            <input type="hidden" name="product_id" value="<?=$product['product_id']?>">
+                                            <input type='text' name='refill_quantity'>
+                                            <input type='submit' value = 'New Quantity'>
+                                        </form>
+                                    </div>
+                                </td>
+                            <?php
+                                }
+                            ?>
+                        </tr>
+                    <?php endforeach ?>
+                </table>
+            </div>
+            <div class="col">
+                <h1>RIGHT POSITION</h1>
+                <h3>Incomplete Transactions</h3>
+                <table>
+                    <tr>
+                        <th>Invoice Number</th>
+                        <th>User Name</th>
+                        <th>Email Address</th>
+                        <th>Shipping Address</th>
+                        <th>Product SKU</th>
+                        <th>Product Color</th>
+                        <th>Quantity</th>
+                        <th>Shipped?</th>
+                    </tr>
+                    <?php foreach($order_rows as $order): 
+                        if($order['shipped'] == "No") {
                     ?>
+                        <tr>
+                            <td><a href="transactions.php?invoice_number=<?=$order['invoice_number']?>&user_id=<?=$order['user_id']?>"> <?=$order['invoice_number']?> </a> </td>
+                            <td><?=$order['first_name'].' '.$order['last_name']?></td>
+                            <td><?=$order['email_address']?></td>
                             <td>
-                                <div class="alert alert-danger" role="alert">
-                                    Low in Stock!!! <br> 
-                                    Current Quantity: <?=$product['quantity']?>
-                                    <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>" method="post">
-                                        <input type="hidden" name="product_id" value="<?=$product['product_id']?>">
-                                        <input type='text' name='refill_quantity'>
-                                        <input type='submit' value = 'New Quantity'>
-                                    </form>
-                                </div>
+                                <?=
+                                    $order['address1'].'<br>'.
+                                    $order['address2'].'<br>'.
+                                    $order['city'].','.
+                                    $order['state'].' '.
+                                    $order['zip_code']
+                                ?>
                             </td>
-                    <?php
-                        } else {
-                    ?>
-                        <td>
-                            <div class="alert alert-info" role="alert">
-                                Current Quantity: <?= $product['quantity']?>
-                                <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method ="post">
-                                    <input type="hidden" name="product_id" value="<?=$product['product_id']?>">
-                                    <input type='text' name='refill_quantity'>
-                                    <input type='submit' value = 'New Quantity'>
+                            <td><?=$order['product_sku']?></td>
+                            <td><?=$order['product_color']?></td>
+                            <td><?=$order['quantity']?></td>
+                            <td>
+                                <form action="../admin/admin_controller.php" method="post">
+                                    <input type="hidden" name="order_id" value =<?=$order['order_id']?>>
+                                    <input type="submit" name="confirm_shipment" value ="Confirmed">
                                 </form>
-                            </div>
-                        </td>
+                            </td>
+                        </tr>
                     <?php
                         }
+                        endforeach 
                     ?>
-                </tr>
-            <?php endforeach ?>
-        </table>
+                </table>
+                <?php
+                    //var_dump($order_rows[1]);
+                ?>
+            </div>
+        </div>
     </div>
 
     <!-- Optional JavaScript -->
@@ -134,28 +188,36 @@
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 </body>
 <?php
-    if(isset($_POST['refill_quantity'])) {
-       $refill_id = $_POST['product_id'];
-       $refill_quantity = $_POST['refill_quantity'];
-       
-       $refill_update_query = " UPDATE products
-            SET 
-                products.quantity = $refill_quantity
-                
-            WHERE 
-                products.product_id = $refill_id
-        ";
-        try
-        {
-            $stmt = $db->prepare($refill_update_query);
-            $stmt->execute();
-            echo "Query has been executed";
-            /* Query works fine but Admin_dashboard.php doesnt refresh the new quantity */
-        } 
-        catch(PDOExpection $ex)
-        {
-            die("Failed to run query: ". $ex->getMessage());
-        }
+    /*Product Updates */
+        /* if(isset($_POST['refill_quantity'])) {
+            $refill_id = $_POST['product_id'];
+            $refill_quantity = $_POST['refill_quantity'];
+            
+            $refill_update_query = " UPDATE products
+                    SET 
+                        products.quantity = $refill_quantity
+                        
+                    WHERE 
+                        products.product_id = $refill_id
+                ";
+                try
+                {
+                    $stmt = $db->prepare($refill_update_query);
+                    $stmt->execute();
+                    echo "Query has been executed";
+                    /* Query works fine but Admin_dashboard.php doesnt refresh the new quantity */
+            /*    } 
+                catch(PDOExpection $ex)
+                {
+                    die("Failed to run query: ". $ex->getMessage());
+                }
+            }*/
+    /* Order Updates */
+    if(isset($_POST['confirm_shipment'])){
+        var_dump($_POST);
+        var_dump("MADE IT");
+        die();
+        //UPDATE `orders` SET `shipped` = 'YES' WHERE `orders`.`order_id` = 18;
     }
    
 ?>
