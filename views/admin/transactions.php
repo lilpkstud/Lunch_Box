@@ -7,7 +7,7 @@
     //This query will grab ALL information about the product by the product_sku AND product_color.
     $invoice_query = " 
         SELECT 
-            orders.user_id, orders.invoice_number, orders.product_sku, orders.product_color, orders.quantity as user_quantity, orders.CREATED_AT, orders.UPDATED_AT as orders_updated, orders.shipped, 
+            orders.order_id, orders.user_id, orders.invoice_number, orders.product_sku, orders.product_color, orders.quantity as user_quantity, orders.CREATED_AT, orders.UPDATED_AT as orders_updated, orders.shipped, 
             users.user_id, users.first_name, users.last_name, users.email_address, users.address1, users.address2, users.city, users.state, users.zip_code, users.UPDATED_AT as users_updated,
             products.product_name, products.quantity as product_quantity, products.UPDATED_AT as products_updated
         FROM orders 

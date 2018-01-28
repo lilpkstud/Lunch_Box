@@ -30,10 +30,32 @@
             die("Failed to run query: ". $ex->getMessage());
         }
     }
-    
+
     /* ADMIN is confiming that they have sent the product to the user*/
     if(isset($_POST['confirm_shipment']) && $_POST['confirm_shipment'] == "Confirmed"){
-        echo "MADE IT";
-        die();
+        $order_id = $_POST['order_id'];
+        
+        $shipment_confirmation_query = "
+            UPDATE orders
+            SET
+                orders.shipped = 'YES',
+                orders.UPDATED_AT = NOW()
+            WHERE
+                orders.order_id = $order_id
+
+        ";
+        try
+        {
+            $stmt = $db->prepare($shipment_confirmation_query);
+            $stmt->execute();
+            header("Location: ../admin/admin_dashboard.php");
+            exit();
+        }
+        catch(PDOExpection $ex)
+        {
+            die("FAILED to run query: ".$ex->getMessage());
+        }
+    
+
     }
 ?>
