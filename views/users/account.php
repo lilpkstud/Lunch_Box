@@ -1,21 +1,5 @@
 <?php
-    require('views/connection.php');
-    var_dump($_SESSION);
-    /*Query will grab all products from the database and present all products from the index page*/
-    $query="
-        SELECT * FROM products
-    ";
-    try
-    {
-        $stmt = $db->prepare($query);
-        $stmt->execute();
-    }
-    catch(PDOExpection $ex)
-    {
-        die("Failed to run query: ". $ex->getMessage());
-    }
-    
-    $rows = $stmt->fetchAll();
+    require('..//connection.php');
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -87,48 +71,17 @@
 
     <!-- Add all page content inside this div if you want the side nav to push page content to the right (not used if you only want the sidenav to sit on top of the page -->
     <div id="content">
-    <div class="container">
-            <?php
-                if(isset($_SESSION['user'])) {
-            ?>
-                <h3>Welcome <?=$_SESSION['user']['first_name']?></h3>
-            <?php        
-                }
-            ?>
-        </div>
         <div class="container">
-            <div class="row">
-                <?php
-                    foreach($rows as $product_key=>$product):
-                        if($product_key % 2 ==0){
-                            echo "<div class='w-100'> </div>";
-                        }
-                ?>
-                    <div class="col-lg-6">
-                        <div id="hover"
-                            onmouseover="
-                                $(this).find('.product_image').css('visibility','hidden'); 
-                                $(this).find('.hidden').css('visibility', 'visible');
-                            "
-                            onmouseout="
-                                $(this).find('.product_image').css('visibility', 'visible');
-                                $(this).find('.hidden').css('visibility', 'hidden');
-
-                            "
-                        >
-                            <a href="/views/products/view_one.php?product_sku=<?=$product['sku']?>&color=<?=$product['color']?>">
-                                <img class="product_image" src="<?=$product['img_url']?>" alt="">
-                                <img class="hidden" src="<?=$product['img_hover']?>" alt="">
-                            </a>
-                        </div>
-                        <h3 class="product_info"><?=$product['product_name']?></h3>
-                        <p class="product_info"><?=$product['price']?></p>
-                    </div>
-                <?php
-                    endforeach;        
-                ?>
+            <div class='row'>
+                <div class='col-lg-6'>
+                    <h2>Order History</h2>
+                </div>
+                <div class='col-lg-6'>
+                    <h2>User Info</h2>
+                </div>
             </div>
         </div>
+            
     </div>
     <footer class="footer">
         <div class="container">
