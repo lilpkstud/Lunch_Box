@@ -135,6 +135,7 @@
                 <table>
                     <tr>
                         <th>Invoice Number</th>
+                        <th>Created At</th>
                         <th>User Name</th>
                         <th>Email Address</th>
                         <th>Shipping Address</th>
@@ -148,6 +149,7 @@
                     ?>
                         <tr>
                             <td><a href="transactions.php?invoice_number=<?=$order['invoice_number']?>&user_id=<?=$order['user_id']?>"> <?=$order['invoice_number']?> </a> </td>
+                            <td><?=date("m/d/Y", strtotime($order['CREATED_AT'])); ?></td>
                             <td><?=$order['first_name'].' '.$order['last_name']?></td>
                             <td><?=$order['email_address']?></td>
                             <td>
