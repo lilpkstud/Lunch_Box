@@ -1,5 +1,26 @@
 <?php
     require('..//connection.php');
+    
+    $user_id = $_SESSION['user']['user_id'];
+
+    /* Grab all orders the user has purchased */
+    $query="
+        SELECT orders.invoice_number, orders.shipped, products.sku, products.product_name, products.description, products.price, products.color FROM orders JOIN products on orders.product_sku = products.sku
+        WHERE orders.user_id = $user_id
+    ";
+    try
+    {
+        $stmt = $db->prepare($query);
+        $stmt->execute();
+    }
+    catch(PDOExpection $ex)
+    {
+        die("Failed to run query: ". $ex->getMessage());
+    }
+    
+    $rows = $stmt->fetchAll();
+
+    var_dump($rows[0], $_SESSION);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -73,11 +94,48 @@
     <div id="content">
         <div class="container">
             <div class='row'>
-                <div class='col-lg-6'>
-                    <h2>Order History</h2>
+            <h2>User Information</h2>
+                <div class='col-lg-12'>
+                    <div class='row'>
+                        <div class='col-lg-4'>
+                            <strong>First Name:</strong> <?=$_SESSION['user']['first_name']?>
+                        </div>
+                        <div class='col-lg-4'>
+                            <strong>Last Name:</strong> <?=$_SESSION['user']['last_name']?>
+                        </div>
+                        <div class='col-lg-4'>
+                            <strong>Email:</strong> <?=$_SESSION['user']['email_address']?>
+                        </div>
+                        <div class='col-lg-12'>
+                            <strong>Shipping Address:</strong> <?=$_SESSION['user']['address1'].' '.$_SESSION['user']['city']?>
+                        </div>
+                    </div>
                 </div>
-                <div class='col-lg-6'>
-                    <h2>User Info</h2>
+            </div>
+            <div class='row'>
+                <div class='col-lg-12'>
+                    <h2>Order History</h2>
+                    <table>
+                        <tr>
+                            <th>Invoice Number</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Product Color</th>
+                            <th>Product Description</th>
+                            <th>Shipped?</th>
+                        </tr>
+                        
+                        <?php foreach($rows as $order): ?>
+                        <tr>
+                            <td><?=$order['invoice_number']?></td>
+                            <td><?=$order['product_name']?></td>
+                            <td>$<?=$order['price']?></td>
+                            <td><?=$order['color']?></td>
+                            <td><?=$order['description']?></td>
+                            <td><?=$order['shipped']?></td>
+                        </tr>
+                        <?php endforeach?>
+                    </table>
                 </div>
             </div>
         </div>
