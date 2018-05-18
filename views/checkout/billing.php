@@ -90,10 +90,20 @@
                 Option 2: Venmo -> Once the payments have been processed we will email you the shipping confirmation!
             </p>
             <a href="/views/checkout/review.php"> REVIEW </a>
+            <div id='card-element'>
+            <!--a Stripe Element will be inserted here-->
+        </div>
+        <!-- Used to display form errors -->
+        <div id='card-errors' role='alert'>
+        
+        </div>
         </div>
     </div>
     <?php
         var_dump($_SESSION);
     ?>
+    <script src='https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+    <script src='https://js.stripe.com/v3/'></script>
+    <script src='./js/charge.js'></script>
 </body>
 </html>
